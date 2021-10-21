@@ -61,6 +61,12 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
 
+# 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC -fpermissive")
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -ggdb -Wall")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall")
+
+
 ###############
 ##Set Directory##
 ###############
@@ -76,14 +82,14 @@ set(THIRD_PARTY_DIR "./third-party")
 # add include directory
 include_directories("${UTTER_SOURCE_DIR}/")
 include_directories("${UTTER_SOURCE_DIR}/common/")
-include_directories("${UTTER_SOURCE_DIR}/TemplateEngine/")
+include_directories("${UTTER_SOURCE_DIR}/StringMatching/")
 
 
 
 # 
 set(demo_cc "${UTTER_EXAMPLE_DIR}/unit_test.cpp"
     "${UTTER_SOURCE_DIR}/common/common.cc"
-    "${UTTER_SOURCE_DIR}/TemplateEngine/ahocorasick.cc"
+    "${UTTER_SOURCE_DIR}/StringMatching/ahocorasick.cc"
 )
 
 
