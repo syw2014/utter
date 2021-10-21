@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${default}",
+                "D:\\install\\mingw64\\include",
+                "D:\\install\\usr\\include",
+                "D:/install/mingw64/include/c++/10.3.0",
+                "D:\\install\\mingw64\\include\\c++\\10.3.0\\tr1",
+                "D:\\develop\\github\\dialogue-service\\src",
+                "D:\\develop\\github\\dialogue-service\\src\\common",
+                "D:\\develop\\github\\dialogue-service\\src\\TemplateEngine"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "windowsSdkVersion": "10.0.19041.0",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "D:\\install\\usr\\bin\\g++.exe"
+        }
+    ],
+    "version": 4
+}
