@@ -262,8 +262,14 @@ void ACAutomaton::SearchLongest(const std::string &text,
             // > 1
             auto pos = j->first.find(i->first);
             if (pos != std::string::npos) {
-                flag = true;
-                break;
+                // whether the keywords start at the same position/index
+                // eg: 打开王者de王者荣耀, 王者:index=2,王者荣耀:index=6, not
+                // the same eg: 打开王者荣耀, 王者:index=2,王者荣耀:index=2, we
+                // only choose the longest keyword
+                if (i->second->index == j->second->index) {
+                    flag = true;
+                    break;
+                }
             }
         }
         if (!flag) { // not find word in other words, means word i was the
@@ -275,14 +281,14 @@ void ACAutomaton::SearchLongest(const std::string &text,
             continue;
         }
     }
-#ifdef _DEBUG
+#ifdef DEBUG
     std::cout << "Before clean longest matching:\n";
     for (auto it = clean_nodes.begin(); it != clean_nodes.end(); ++it) {
-        std::cout << it->first << ",";
+        std::cout << it->first << " index: " << it->second->index << ", ";
     }
-    std::cout << "After clean longest matching: \n";
+    std::cout << "\nAfter clean longest matching: \n";
     for (auto it = nodes.begin(); it != nodes.end(); ++it) {
-        std::cout << it->first << ",";
+        std::cout << it->first << " index: " << it->second->index << ", ";
     }
 #endif
 }
