@@ -1,9 +1,10 @@
 #########################################################################
-# File Name: compile.sh
-# Method: 
-# Author: Jerry Shi
-# Mail: jerryshi0110@gmail.com
-# Created Time: Thu Oct 21 15:35:45 2021
+ # @Author: your name
+ # @Date: 2021-10-21 15:35:47
+ # @LastEditTime: 2021-10-22 17:45:56
+ # @LastEditors: your name
+ # @Description: In User Settings Edit
+ # @FilePath: \dialogue-service\compile.sh
 #########################################################################
 #!/bin/bash
 
@@ -11,7 +12,7 @@
 # CMake configure
 if [ ! -d "./_builds" ]; then
     echo ">>>>>Start configure with cmake..."
-    cmake -H. -B_builds
+    cmake -H. -B_builds -DCMAKE_BUILD_TYPE=DEBUG
 fi
 
 
