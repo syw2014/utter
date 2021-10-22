@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-10-14 10:37:16
- * @LastEditTime: 2021-10-21 18:26:19
+ * @LastEditTime: 2021-10-22 18:04:24
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \dialogue-service\src\unit_test.cpp
@@ -23,9 +23,10 @@ int main(int argc, char *argv[]) {
 
     // TEST ahc keyword search for NER
     std::vector<std::string> keywords = {
-        "王者荣耀", "王者",   "天空之城", "稻花香", "哈利波特",
-        "悟",       "我想要", "帮我",     "你好",   "您好"};
-    std::vector<int> labels = {1, 1, 1, 2, 3, 4, 4, 0, 0, 0};
+        "王者荣耀", "王者",   "天空之城",    "稻花香", "哈利波特",
+        "悟",       "我想要", "帮我",        "你好",   "您好",
+        "ShangHai", "London", "London Tower"};
+    std::vector<int> labels = {1, 1, 1, 2, 3, 4, 4, 0, 0, 0, 5, 5, 5};
     StringMatching::ACAutomaton *ahc = new StringMatching::ACAutomaton();
 
     // add keywords to ahc
@@ -40,9 +41,15 @@ int main(int argc, char *argv[]) {
     std::map<std::string, StringMatching::TrieNode *> nodes;
 
     std::vector<std::string> tstr1 = {
-        "打开王者de王者荣耀",      "打开王者荣耀", "打开王者",
-        "帮我找下王者荣耀",        "你好，王者",   "您好，我想要听稻花香",
-        "帮我找含有悟的专辑，谢谢"};
+        "打开王者de王者荣耀",
+        "打开王者荣耀",
+        "打开王者",
+        "帮我找下王者荣耀",
+        "你好，王者",
+        "您好，我想要听稻花香",
+        "帮我找含有悟的专辑，谢谢",
+        "I want to buy a ticket from ShangHai to London.",
+        "Will you take me to London Tower?"};
 
     for (int i = 0; i < tstr1.size(); ++i) {
         nodes.clear();
