@@ -15,6 +15,13 @@ project(
     LANGUAGES C CXX # Used to determine the languages to use based on file extensions
 )
 
+
+############################
+##  Define Macros for debug   ##
+############################
+add_definitions(-DDEBUG)
+
+
 ############################
 ##  Modules and scripts   ##
 ############################
