@@ -22,6 +22,7 @@ project(
 add_definitions(-DDEBUG)
 
 
+
 ############################
 ##  Modules and scripts   ##
 ############################
@@ -53,7 +54,7 @@ option(${PROJECT_NAME}_INSTALL "Should ${PROJECT_NAME} be added to the install l
 # Use your own option for tests, in case people use your library through add_subdirectory
 cmake_dependent_option(${PROJECT_NAME}_BUILD_TESTS
     "Enable ${PROJECT_NAME} project tests targets" ON # By default we want tests if CTest is enabled
-    "BUILD_TESTING" OFF # Stay coherent with CTest variables
+    "BUILD_TESTING" ON # Stay coherent with CTest variables
 )
 
 
@@ -72,6 +73,13 @@ set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC -fpermissive")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -ggdb -Wall")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall")
+
+
+############################
+## Third party for project
+############################
+# googletest
+# add_subdirectory(third-party/googletest)
 
 
 ###############
@@ -103,3 +111,24 @@ set(demo_cc "${UTTER_EXAMPLE_DIR}/unit_test.cpp"
 add_executable(Demo ${demo_cc})
 
 
+############################### 
+# enable CTest testing unit test for all parts
+enable_testing()
+
+# TODO, will be optimizated, make googletest as external module
+set(gtest_lib_dir ${CMAKE_CURRENT_SOURCE_DIR}/third-party/googletest/googletest/_builds/lib/)
+set(gtest_include_dir ${CMAKE_CURRENT_SOURCE_DIR}/third-party/googletest/googletest/googletest/)
+include_directories("${gtest_include_dir}/include")
+
+# Add a testing executable
+add_executable(hello_test "${CMAKE_CURRENT_SOURCE_DIR}/tests/string_match_test.cc")
+
+
+target_link_libraries(hello_test
+     ${gtest_lib_dir}/libgtest_main.a
+     ${gtest_lib_dir}/libgtest.a
+     ${gtest_lib_dir}/libgmock_main.a
+     ${gtest_lib_dir}/libgmock.a
+)
+
+add_test(test_all hello_test)
