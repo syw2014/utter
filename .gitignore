@@ -32,3 +32,7 @@
 *.app
 
 _builds/
+
+# third-party
+third-party/googletest/googletest/
+third-party/googletest/googletest/*.tar.gz
