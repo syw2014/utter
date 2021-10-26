@@ -35,4 +35,4 @@ _builds/
 
 # third-party
 third-party/googletest/googletest/
-third-party/googletest/googletest/*.gz
+third-party/googletest/*.gz
