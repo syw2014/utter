@@ -10,7 +10,8 @@
                 "D:\\install\\mingw64\\include\\c++\\10.3.0\\tr1",
                 "D:\\develop\\github\\dialogue-service\\src",
                 "D:\\develop\\github\\dialogue-service\\src\\common",
-                "D:\\develop\\github\\dialogue-service\\src\\StringMatching"
+                "D:\\develop\\github\\dialogue-service\\src\\StringMatching",
+                "D:\\develop\\github\\dialogue-service\\third-party\\googletest\\googletest\\googletest\\include"
             ],
             "defines": [
                 "_DEBUG",
