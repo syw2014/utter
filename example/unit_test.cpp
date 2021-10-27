@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-10-14 10:37:16
- * @LastEditTime: 2021-10-22 18:04:24
+ * @LastEditTime: 2021-10-27 11:13:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \dialogue-service\src\unit_test.cpp
@@ -23,10 +23,10 @@ int main(int argc, char *argv[]) {
 
     // TEST ahc keyword search for NER
     std::vector<std::string> keywords = {
-        "王者荣耀", "王者",   "天空之城",    "稻花香", "哈利波特",
-        "悟",       "我想要", "帮我",        "你好",   "您好",
-        "ShangHai", "London", "London Tower"};
-    std::vector<int> labels = {1, 1, 1, 2, 3, 4, 4, 0, 0, 0, 5, 5, 5};
+        "王者荣耀", "王者",   "天空之城",     "稻花香", "哈利波特",
+        "悟",       "我想要", "帮我",         "你好",   "您好",
+        "ShangHai", "London", "London Tower", "万夫2"};
+    std::vector<int> labels = {1, 1, 1, 2, 3, 4, 4, 0, 0, 0, 5, 5, 5, 6};
     StringMatching::ACAutomaton *ahc = new StringMatching::ACAutomaton();
 
     // add keywords to ahc
@@ -38,12 +38,16 @@ int main(int argc, char *argv[]) {
     ahc->Build();
 
     // test
-    std::map<std::string, StringMatching::TrieNode *> nodes;
+    std::map<std::string, std::vector<StringMatching::IndexLabelPairType>>
+        nodes;
+    std::vector<std::string> entity_words;
+    std::vector<int> indexes;
+    std::vector<int> labelIds;
 
     std::vector<std::string> tstr1 = {
-        "打开王者de王者荣耀",
-        "打开王者荣耀",
-        "打开王者",
+        "打开王者de王者荣耀，万夫2.0",
+        "打开王者王者荣耀，万夫2.0",
+        "打开王者王者",
         "帮我找下王者荣耀",
         "你好，王者",
         "您好，我想要听稻花香",
@@ -59,13 +63,15 @@ int main(int argc, char *argv[]) {
         // print search results
         std::cout << "Input sentence: " << tstr1[i] << std::endl;
         // parse search results
-        for (std::map<std::string, StringMatching::TrieNode *>::iterator iter =
-                 nodes.begin();
-             iter != nodes.end(); ++iter) {
-            std::cout << "Keywords: " << iter->second->word
-                      << "\tindex: " << iter->second->index
-                      << "\tlabel id: " << iter->second->label << std::endl;
+        entity_words.clear();
+        indexes.clear();
+        labelIds.clear();
+        ahc->ParseSearchWords(nodes, entity_words, indexes, labelIds);
+        for (std::size_t i = 0; i < entity_words.size(); ++i) {
+            std::cout << entity_words[i] << "\t index: " << indexes[i]
+                      << "\t label: " << labelIds[i] << std::endl;
         }
+
         std::cout << "\n-------------------------------------------\n";
     }
 
