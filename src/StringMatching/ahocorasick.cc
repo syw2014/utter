@@ -1,23 +1,13 @@
 /*************************************************************************
 # File Name: ahocorasick.cc
-# Method:
-# Author: Jerry Shi
-# Mail: jerryshi0110@gmail.com
-# Created Time: 2020年07月13日 11:10:16
  ************************************************************************/
-//#include <cstring>
-//#include <stdio.h>
-//#include <stdlib.h>
-//#include <ctype>
-
-//#include <iostream>
 #include "ahocorasick.h"
 #include "common.h"
 
 namespace StringMatching {
 TrieNode::TrieNode()
-    : word(""), fail(0), isMatched(false), termFreq(0), wordLength(0),
-      index(-1), label(-1) {}
+    : word(""), fail(0), isMatched(false), termFreq(0), index(-1),
+      wordLength(0), label(-1) {}
 
 TrieNode::~TrieNode() { delete this->fail; }
 
@@ -34,7 +24,10 @@ void ACAutomaton::SplitWord(const std::string &text, int &word_length,
     std::string nstr = text;
     // Normalize text
     STRNormalize::Normalize::ToUpper(nstr);
-    bool valid = STRNormalize::Normalize::IsValidUTF8(nstr);
+    // bool valid = STRNormalize::Normalize::IsValidUTF8(nstr);
+    // if (valid) {
+    //     std::cout << "WARN, input was not valid utf8 encode\n";
+    // }
     // convert string to unicodes
     utf8::utf8to16(nstr.begin(), nstr.end(), std::back_inserter(characters));
     word_length = characters.size();
@@ -100,7 +93,7 @@ void ACAutomaton::AddWord(const std::string &pattern, const int &label) {
             TrieNode *n = new TrieNode;
             // convert unicode to word
             std::string ww;
-            bool f = STRNormalize::Normalize::UnicodeToUTF8Str(path_word, ww);
+            STRNormalize::Normalize::UnicodeToUTF8Str(path_word, ww);
             n->word = ww;
             n->wordLength = i;
             // std::cout <<"Debug->2" << *iter << std::endl;
@@ -211,13 +204,11 @@ void ACAutomaton::Search(
                     std::make_pair(temp->index, temp->label);
                 std::vector<IndexLabelPairType> tmp_node = {res_tmp};
                 nodes.insert(std::make_pair(temp->word, tmp_node));
-                std::cout << "Not Found->index: " << temp->index << std::endl;
             } else {
                 temp->termFreq = 1;
                 temp->index = index + 1 - temp->wordLength;
                 IndexLabelPairType res_tmp =
                     std::make_pair(temp->index, temp->label);
-                std::cout << "Found->index: " << temp->index << std::endl;
                 nodes[temp->word].push_back(res_tmp);
             }
         }
@@ -229,53 +220,14 @@ void ACAutomaton::Search(
 void ACAutomaton::SearchLongest(
     const std::string &text,
     std::map<std::string, std::vector<IndexLabelPairType>> &nodes) {
-    // int bufLength = 0;
-    // std::vector<UnicodeType> characters;
-    // SplitWord(text, bufLength, characters);
-    // int index = 0;
 
-    // TrieNode *temp = root;
-
-    // for (std::vector<UnicodeType>::iterator character = characters.begin();
-    //      character != characters.end(); ++character) {
-    //     while (!GetNext(temp, *character)) {
-    //         temp = temp->fail;
-    //     }
-
-    //     temp = GetNext(temp, *character);
-    //     // std::cout << "Debug->" << temp->word << "\t" <<temp->isMatched <<
-    //     // std::endl;
-
-    //     if (temp->isMatched) { // match, store matched results
-    //         std::map<std::string, std::vector<IndexLabelPairType>>::iterator
-    //             nodeFind = nodes.find(temp->word); // deduplication
-    //         if (nodeFind == nodes.end()) {
-    //             temp->termFreq = 1;
-    //             temp->index = index + 1 - temp->wordLength;
-    //             IndexLabelPairType res_tmp =
-    //                 std::make_pair(temp->index, temp->label);
-    //             std::vector<IndexLabelPairType> tmp_node = {res_tmp};
-    //             nodes.insert(std::make_pair(temp->word, tmp_node));
-    //             std::cout << "Not Found->index: " << temp->index <<
-    //             std::endl;
-    //         } else {
-    //             temp->termFreq = 1;
-    //             temp->index = index + 1 - temp->wordLength;
-    //             IndexLabelPairType res_tmp =
-    //                 std::make_pair(temp->index, temp->label);
-    //             std::cout << "Found->index: " << temp->index << std::endl;
-    //             nodes[temp->word].push_back(res_tmp);
-    //         }
-    //     }
-    //     ++index;
-    // }
+    // All words search
     Search(text, nodes);
 
     // Find the longest words
     std::map<std::string, std::vector<IndexLabelPairType>> clean_nodes = nodes;
     nodes.clear();
-    // find the longest matching
-    std::set<std::size_t> removed_idx; // store the index will be removed
+    std::set<std::size_t> removed_idx; // store the removed index
     for (auto i = clean_nodes.begin(); i != clean_nodes.end(); ++i) {
         removed_idx.clear();
         for (auto j = std::next(i, 1); j != clean_nodes.end(); ++j) {
