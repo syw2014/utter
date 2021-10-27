@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-10-13 15:06:42
- * @LastEditTime: 2021-10-21 18:22:50
+ * @LastEditTime: 2021-10-27 10:22:16
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \dialogue-service\src\ahocorasick\ahocorasick.h
@@ -15,6 +15,7 @@
 #include <iostream>
 #include <map>
 #include <queue>
+#include <set>
 #include <sstream>
 #include <string>
 #include <time.h>
@@ -35,6 +36,9 @@
 #include <mutex>
 
 namespace StringMatching {
+
+typedef std::pair<int, int> IndexLabelPairType;
+
 class TrieNode {
   public:
     // std::vector<UnicodeType> word; // token in document
@@ -94,11 +98,18 @@ class ACAutomaton {
 
     // Get all matched nodes
     void Search(const std::string &text,
-                std::map<std::string, TrieNode *> &nodes);
+                std::map<std::string, std::vector<IndexLabelPairType>> &nodes);
 
     // Get the longest match nodes
-    void SearchLongest(const std::string &text,
-                       std::map<std::string, TrieNode *> &nodes);
+    void SearchLongest(
+        const std::string &text,
+        std::map<std::string, std::vector<IndexLabelPairType>> &nodes);
+
+    // Parse keyowrds from search results
+    void ParseSearchWords(
+        std::map<std::string, std::vector<IndexLabelPairType>> &nodes,
+        std::vector<std::string> &keywords, std::vector<int> &indexes,
+        std::vector<int> &labelIds);
 
 }; // end ACAutomaton class
 
