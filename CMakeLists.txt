@@ -117,18 +117,23 @@ enable_testing()
 
 # TODO, will be optimizated, make googletest as external module
 set(gtest_lib_dir ${CMAKE_CURRENT_SOURCE_DIR}/third-party/googletest/googletest/_builds/lib/)
-set(gtest_include_dir ${CMAKE_CURRENT_SOURCE_DIR}/third-party/googletest/googletest/googletest/)
-include_directories("${gtest_include_dir}/include")
+set(gtest_include_dir ${CMAKE_CURRENT_SOURCE_DIR}/third-party/googletest/googletest/)
+include_directories("${gtest_include_dir}/googletest/include")
+include_directories("${gtest_include_dir}/googlemock/include")
 
 # Add a testing executable
-add_executable(hello_test "${CMAKE_CURRENT_SOURCE_DIR}/tests/string_match_test.cc")
+set(unit_test_cc "${CMAKE_CURRENT_SOURCE_DIR}/tests/string_match_test.cc"
+    "${UTTER_SOURCE_DIR}/common/common.cc"
+    "${UTTER_SOURCE_DIR}/StringMatching/ahocorasick.cc"
+)
+add_executable(UnitTest "${unit_test_cc}")
 
 
-target_link_libraries(hello_test
+target_link_libraries(UnitTest
      ${gtest_lib_dir}/libgtest_main.a
      ${gtest_lib_dir}/libgtest.a
      ${gtest_lib_dir}/libgmock_main.a
      ${gtest_lib_dir}/libgmock.a
 )
 
-add_test(test_all hello_test)
+add_test(test_all UnitTest)
