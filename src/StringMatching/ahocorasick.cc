@@ -13,7 +13,15 @@ TrieNode::~TrieNode() { delete this->fail; }
 
 // ACAutomaton class
 // Construct
-ACAutomaton::ACAutomaton() { this->root = new TrieNode; }
+ACAutomaton::ACAutomaton(bool use_upper) {
+    this->root = new TrieNode;
+    strToUpper = use_upper;
+}
+
+ACAutomaton::ACAutomaton() {
+    this->root = new TrieNode;
+    strToUpper = true;
+}
 
 // Destructor
 ACAutomaton::~ACAutomaton() { delete this->root; }
@@ -23,7 +31,10 @@ void ACAutomaton::SplitWord(const std::string &text, int &word_length,
 
     std::string nstr = text;
     // Normalize text
-    STRNormalize::Normalize::ToUpper(nstr);
+    if (strToUpper) {
+        STRNormalize::Normalize::ToUpper(nstr);
+    }
+
     // bool valid = STRNormalize::Normalize::IsValidUTF8(nstr);
     // if (valid) {
     //     std::cout << "WARN, input was not valid utf8 encode\n";

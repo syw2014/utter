@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-10-13 15:06:42
- * @LastEditTime: 2021-10-27 10:22:16
+ * @LastEditTime: 2021-10-27 15:33:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \dialogue-service\src\ahocorasick\ahocorasick.h
@@ -64,8 +64,11 @@ class ACAutomaton {
   public:
     TrieNode *root;                    // root node of ac
     std::vector<TrieNode *> instances; // store all tail nodels
+    bool strToUpper; // whether all the keywords add into ahc convert to upper
+                     // or not
   public:
-    ACAutomaton(); // construction
+    ACAutomaton(bool strToUpper); // construction
+    ACAutomaton();                // construction
 
     ~ACAutomaton(); // destructor
 
