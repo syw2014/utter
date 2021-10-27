@@ -181,41 +181,9 @@ bool ACAutomaton::IsMatch(const std::string &text) {
 }
 
 // return all the matched nodes
-void ACAutomaton::Search(const std::string &text,
-                         std::map<std::string, TrieNode *> &nodes) {
-    int bufLength = 0;
-    std::vector<UnicodeType> characters;
-    SplitWord(text, bufLength, characters);
-    int index = 0;
-
-    TrieNode *temp = root;
-
-    for (std::vector<UnicodeType>::iterator character = characters.begin();
-         character != characters.end(); ++character) {
-        while (!GetNext(temp, *character)) {
-            temp = temp->fail;
-        }
-
-        temp = GetNext(temp, *character);
-
-        if (temp->isMatched) { // match
-            std::map<std::string, TrieNode *>::iterator nodeFind =
-                nodes.find(temp->word);
-            if (nodeFind == nodes.end()) {
-                temp->termFreq = 1;
-                temp->index = index + 1 - temp->wordLength;
-                nodes.insert(std::make_pair(temp->word, temp));
-            } else {
-                nodeFind->second->termFreq += 1;
-            }
-        }
-        ++index;
-    }
-}
-
-// return all the matched nodes
-void ACAutomaton::SearchLongest(const std::string &text,
-                                std::map<std::string, TrieNode *> &nodes) {
+void ACAutomaton::Search(
+    const std::string &text,
+    std::map<std::string, std::vector<IndexLabelPairType>> &nodes) {
     int bufLength = 0;
     std::vector<UnicodeType> characters;
     SplitWord(text, bufLength, characters);
@@ -234,63 +202,158 @@ void ACAutomaton::SearchLongest(const std::string &text,
         // std::endl;
 
         if (temp->isMatched) { // match, store matched results
-            std::map<std::string, TrieNode *>::iterator nodeFind =
-                nodes.find(temp->word); // deduplication
+            std::map<std::string, std::vector<IndexLabelPairType>>::iterator
+                nodeFind = nodes.find(temp->word); // deduplication
             if (nodeFind == nodes.end()) {
                 temp->termFreq = 1;
                 temp->index = index + 1 - temp->wordLength;
-                nodes.insert(std::make_pair(temp->word, temp));
+                IndexLabelPairType res_tmp =
+                    std::make_pair(temp->index, temp->label);
+                std::vector<IndexLabelPairType> tmp_node = {res_tmp};
+                nodes.insert(std::make_pair(temp->word, tmp_node));
+                std::cout << "Not Found->index: " << temp->index << std::endl;
             } else {
-                nodeFind->second->termFreq += 1;
+                temp->termFreq = 1;
+                temp->index = index + 1 - temp->wordLength;
+                IndexLabelPairType res_tmp =
+                    std::make_pair(temp->index, temp->label);
+                std::cout << "Found->index: " << temp->index << std::endl;
+                nodes[temp->word].push_back(res_tmp);
             }
         }
         ++index;
     }
+}
 
-    // keep the longest match string
-    // TODO, optimized
-    std::map<std::string, TrieNode *> clean_nodes = nodes;
+// return all the matched nodes
+void ACAutomaton::SearchLongest(
+    const std::string &text,
+    std::map<std::string, std::vector<IndexLabelPairType>> &nodes) {
+    // int bufLength = 0;
+    // std::vector<UnicodeType> characters;
+    // SplitWord(text, bufLength, characters);
+    // int index = 0;
+
+    // TrieNode *temp = root;
+
+    // for (std::vector<UnicodeType>::iterator character = characters.begin();
+    //      character != characters.end(); ++character) {
+    //     while (!GetNext(temp, *character)) {
+    //         temp = temp->fail;
+    //     }
+
+    //     temp = GetNext(temp, *character);
+    //     // std::cout << "Debug->" << temp->word << "\t" <<temp->isMatched <<
+    //     // std::endl;
+
+    //     if (temp->isMatched) { // match, store matched results
+    //         std::map<std::string, std::vector<IndexLabelPairType>>::iterator
+    //             nodeFind = nodes.find(temp->word); // deduplication
+    //         if (nodeFind == nodes.end()) {
+    //             temp->termFreq = 1;
+    //             temp->index = index + 1 - temp->wordLength;
+    //             IndexLabelPairType res_tmp =
+    //                 std::make_pair(temp->index, temp->label);
+    //             std::vector<IndexLabelPairType> tmp_node = {res_tmp};
+    //             nodes.insert(std::make_pair(temp->word, tmp_node));
+    //             std::cout << "Not Found->index: " << temp->index <<
+    //             std::endl;
+    //         } else {
+    //             temp->termFreq = 1;
+    //             temp->index = index + 1 - temp->wordLength;
+    //             IndexLabelPairType res_tmp =
+    //                 std::make_pair(temp->index, temp->label);
+    //             std::cout << "Found->index: " << temp->index << std::endl;
+    //             nodes[temp->word].push_back(res_tmp);
+    //         }
+    //     }
+    //     ++index;
+    // }
+    Search(text, nodes);
+
+    // Find the longest words
+    std::map<std::string, std::vector<IndexLabelPairType>> clean_nodes = nodes;
     nodes.clear();
     // find the longest matching
-    bool flag = false;
+    std::set<std::size_t> removed_idx; // store the index will be removed
     for (auto i = clean_nodes.begin(); i != clean_nodes.end(); ++i) {
+        removed_idx.clear();
         for (auto j = std::next(i, 1); j != clean_nodes.end(); ++j) {
-            if (i->first == j->first) {
-                continue;
-            }
-            // TODO, fix bugs, the distance between i->first and j->first should
-            // > 1
+            // *Note*,we check whether the word was the longest rule decribe as
+            // bellow, we assume have w1 and w2 1) w1 should be the substring of
+            // the w2 2) the start index in the original sentence should be the
+            // same both 1) and 2) ture we decide the w2 was the longest word
+            // Rule1
             auto pos = j->first.find(i->first);
             if (pos != std::string::npos) {
                 // whether the keywords start at the same position/index
                 // eg: 打开王者de王者荣耀, 王者:index=2,王者荣耀:index=6, not
                 // the same eg: 打开王者荣耀, 王者:index=2,王者荣耀:index=2, we
                 // only choose the longest keyword
-                if (i->second->index == j->second->index) {
-                    flag = true;
-                    break;
+                // Rule 2
+                // Get all the index from the second keywords vector
+                std::set<int> index_set;
+                for (auto p : j->second) {
+                    index_set.insert(p.first);
+                }
+                for (auto ii : i->second) {
+                    if (index_set.find(ii.first) != index_set.end()) {
+                        removed_idx.insert(ii.first);
+                    }
                 }
             }
         }
-        if (!flag) { // not find word in other words, means word i was the
-                     // longest in string
-            nodes.insert(std::make_pair(i->first, i->second));
-        } else { // found word i appears in other words,so not keep ,jump next
-                 // word
-            flag = false;
-            continue;
+
+        // remove duplicated index
+        std::vector<IndexLabelPairType> keep_idx;
+        for (auto k : i->second) {
+            auto pos = removed_idx.find(k.first);
+            if (pos == removed_idx.end()) {
+                keep_idx.push_back(k);
+            }
+        }
+        // if there left keywords then insert to the final result
+        // other while all the keywords in i->first are not the longest keywords
+        if (keep_idx.size() != 0) {
+            nodes.insert(std::make_pair(i->first, keep_idx));
         }
     }
 #ifdef DEBUG
     std::cout << "Before clean longest matching:\n";
     for (auto it = clean_nodes.begin(); it != clean_nodes.end(); ++it) {
-        std::cout << it->first << " index: " << it->second->index << ", ";
+        std::cout << it->first << "\tindex: ";
+        for (std::size_t itt = 0; itt < it->second.size(); ++itt) {
+            std::cout << it->second[itt].first << ",";
+        }
+        std::cout << std::endl;
     }
     std::cout << "\nAfter clean longest matching: \n";
     for (auto it = nodes.begin(); it != nodes.end(); ++it) {
-        std::cout << it->first << " index: " << it->second->index << ", ";
+        std::cout << it->first << "\tindex: ";
+        for (std::size_t itt = 0; itt < it->second.size(); ++itt) {
+            std::cout << it->second[itt].first << ",";
+        }
+        std::cout << std::endl;
     }
 #endif
+}
+
+void ACAutomaton::ParseSearchWords(
+    std::map<std::string, std::vector<IndexLabelPairType>> &nodes,
+    std::vector<std::string> &keywords, std::vector<int> &indexes,
+    std::vector<int> &labelIds) {
+    keywords.clear();
+    indexes.clear();
+    labelIds.clear();
+    for (std::map<std::string, std::vector<IndexLabelPairType>>::iterator iter =
+             nodes.begin();
+         iter != nodes.end(); ++iter) {
+        for (std::size_t it = 0; it < iter->second.size(); ++it) {
+            keywords.push_back(iter->first);
+            indexes.push_back(iter->second[it].first);
+            labelIds.push_back(iter->second[it].second);
+        }
+    }
 }
 
 } // namespace StringMatching
