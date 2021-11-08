@@ -11,7 +11,8 @@
                 "D:\\develop\\github\\dialogue-service\\src",
                 "D:\\develop\\github\\dialogue-service\\src\\common",
                 "D:\\develop\\github\\dialogue-service\\src\\StringMatching",
-                "D:\\develop\\github\\dialogue-service\\third-party\\googletest\\googletest\\googletest\\include"
+                "D:\\develop\\github\\dialogue-service\\third-party\\googletest\\googletest\\googletest\\include",
+                "D:\\develop\\github\\dialogue-service\\third-party\\boost\\boost\\_builds\\ouput\\include\\boost-1_76"
             ],
             "defines": [
                 "_DEBUG",

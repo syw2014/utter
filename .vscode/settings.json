@@ -80,6 +80,7 @@
         "typeinfo": "cpp",
         "variant": "cpp",
         "any": "c",
-        "forward_list": "c"
+        "forward_list": "c",
+        "thread.hpp": "c"
     }
 }
