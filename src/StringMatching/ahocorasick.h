@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-10-13 15:06:42
- * @LastEditTime: 2021-10-27 15:33:15
+ * @LastEditTime: 2021-11-10 14:25:49
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \dialogue-service\src\ahocorasick\ahocorasick.h
@@ -113,6 +113,13 @@ class ACAutomaton {
         std::map<std::string, std::vector<IndexLabelPairType>> &nodes,
         std::vector<std::string> &keywords, std::vector<int> &indexes,
         std::vector<int> &labelIds);
+
+    // Search and parse word text, index, labels with the specified mode
+    // (longest or full search)
+    void SearchParse(const std::string &text,
+                     std::vector<std::string> &keywords,
+                     std::vector<int> &indexes, std::vector<int> &labelIds,
+                     const bool isLongest = true);
 
 }; // end ACAutomaton class
 

@@ -319,4 +319,23 @@ void ACAutomaton::ParseSearchWords(
     }
 }
 
+void ACAutomaton::SearchParse(const std::string &text,
+                              std::vector<std::string> &keywords,
+                              std::vector<int> &indexes,
+                              std::vector<int> &labelIds,
+                              const bool isLongest) {
+    keywords.clear();
+    indexes.clear();
+    labelIds.clear();
+    std::map<std::string, std::vector<IndexLabelPairType>> nodes;
+    if (isLongest) {
+        SearchLongest(text, nodes);
+    } else {
+        Search(text, nodes);
+    }
+
+    // Parse search results
+    ParseSearchWords(nodes, keywords, indexes, labelIds);
+}
+
 } // namespace StringMatching
