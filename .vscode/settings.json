@@ -81,6 +81,18 @@
         "variant": "cpp",
         "any": "c",
         "forward_list": "c",
-        "thread.hpp": "c"
+        "thread.hpp": "c",
+        "csetjmp": "cpp",
+        "csignal": "cpp",
+        "*.ipp": "cpp",
+        "strstream": "cpp",
+        "codecvt": "cpp",
+        "coroutine": "cpp",
+        "source_location": "cpp",
+        "rope": "cpp",
+        "slist": "cpp",
+        "future": "cpp",
+        "shared_mutex": "cpp",
+        "valarray": "cpp"
     }
 }
