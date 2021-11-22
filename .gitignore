@@ -37,3 +37,4 @@ _builds/
 third-party/googletest/googletest/
 third-party/googletest/*.gz
 third-party/spdlog/spdlog/
+third-party/boost/boost
