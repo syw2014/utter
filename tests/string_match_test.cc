@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-10-20 14:52:29
- * @LastEditTime: 2021-10-27 14:32:35
+ * @LastEditTime: 2021-10-27 15:35:33
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \dialogue-service\tests\temp_engine_test.cc
@@ -18,7 +18,8 @@ int main(int argc, char **argv) {
 }
 
 // Create AHC instance
-StringMatching::ACAutomaton *ahc = new StringMatching::ACAutomaton();
+bool use_upper = true;
+StringMatching::ACAutomaton *ahc = new StringMatching::ACAutomaton(use_upper);
 // Test keywords as entity
 std::vector<std::string> keywords = {
     "王者荣耀", "王者",     "天空之城",     "稻花香",      "哈利波特",
