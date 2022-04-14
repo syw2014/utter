@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-10-14 10:37:16
- * @LastEditTime: 2021-10-27 11:13:50
+ * @LastEditTime: 2021-10-27 15:34:40
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \dialogue-service\src\unit_test.cpp
@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     StringMatching::ACAutomaton *ahc = new StringMatching::ACAutomaton();
 
     // add keywords to ahc
-    for (int i = 0; i < keywords.size(); ++i) {
+    for (std::size_t i = 0; i < keywords.size(); ++i) {
         ahc->AddWord(keywords[i], labels[i]);
     }
 
@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
         "I want to buy a ticket from ShangHai to London.",
         "Will you take me to London Tower?"};
 
-    for (int i = 0; i < tstr1.size(); ++i) {
+    for (std::size_t i = 0; i < tstr1.size(); ++i) {
         nodes.clear();
         // ahc->Search(tstr1[i], nodes);
         ahc->SearchLongest(tstr1[i], nodes);
